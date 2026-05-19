@@ -198,4 +198,4 @@ This project is open source. Feel free to use, modify, and distribute it for edu
 
 ---
 
-> Built with ❤️ to empower citizens and streamline civic governance.
+> Entirely built by Athira Anil.
