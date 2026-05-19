@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Approve Officers - CivicBridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F0F2F5;
+        }
+        .header-bg {
+            background-color: #0A192F;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #2563EB;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            background-color: #1D4ED8;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-bg text-white py-4 px-6 md:px-12 flex items-center justify-between shadow-md">
+        <a href="{% url 'base' %}" class="flex items-center space-x-3">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-11a3 3 0 100-6 3 3 0 000 6z"></path>
+            </svg>
+            <span class="text-2xl font-bold">CivicBridge</span>
+        </a>
+
+        <div class="relative">
+            <button id="userMenuButton" class="flex items-center space-x-2 text-white hover:text-gray-200 focus:outline-none">
+                <svg class="w-8 h-8 rounded-full border-2 border-white p-1" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="hidden md:block font-medium">{{ user.username }}</span>
+                <svg class="w-4 h-4 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div id="userMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-10">
+                <div class="block px-4 py-2 text-sm text-gray-700">Signed in as <span class="font-semibold">{{ user.username }}</span></div>
+                <div class="border-t border-gray-100"></div>
+                <a href="{% url 'officer_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 md:px-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8 text-center md:text-left">Pending Officer Approvals</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if pending_officers %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for officer in pending_officers %}
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold">{{ officer.user.username }}</h2>
+                    <span class="text-sm text-gray-500">{{ officer.get_department_display }}</span>
+                </div>
+                <p class="text-gray-700 mb-2"><strong>Officer ID:</strong> {{ officer.officer_id }}</p>
+                <p class="text-gray-700 mb-2"><strong>Phone:</strong> {{ officer.phone|default:"N/A" }}</p>
+                <p class="text-gray-700 mb-2"><strong>Created At:</strong> {{ officer.created_at|date:"d M Y, H:i" }}</p>
+
+                <div class="mt-4 flex space-x-4 justify-center">
+                    <a href="{% url 'approve_officer_action' officer.id %}" class="btn-primary block text-center">
+                        Approve Officer
+                    </a>
+                    <form method="post" action="{% url 'reject_officer_action' officer.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary block bg-red-600 hover:bg-red-700">
+                            Reject Officer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-600 text-lg text-center">No pending officer approvals at the moment.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        (function() {
+            const userMenuButton = document.getElementById('userMenuButton');
+            const userMenu = document.getElementById('userMenu');
+
+            userMenuButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                userMenu.classList.toggle('hidden');
+            });
+
+            window.addEventListener('click', function(event) {
+                if (!userMenu.contains(event.target) && !userMenuButton.contains(event.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
+            window.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    userMenu.classList.add('hidden');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

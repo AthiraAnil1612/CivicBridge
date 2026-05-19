@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Complaint</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A192F; /* Dark blue background from the screenshot */
+        }
+        .map-container {
+            height: 400px;
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+        }
+        button {
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-[#0A192F] min-h-screen text-gray-800">
+
+    <header class="text-white py-4 px-6 md:px-12 flex items-center justify-between">
+        <a href="{% url 'base' %}" class="flex items-center space-x-2">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m8-11a3 3 0 100-6 3 3 0 000 6z"></path>
+            </svg>
+            <span class="text-xl font-bold">CivicBridge</span>
+        </a>
+        <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
+            Dashboard
+        </a>
+    </header>
+
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="bg-white rounded-lg shadow-xl p-8 mb-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 mb-2">Submit a Complaint</h1>
+                <p class="text-gray-600">Report issues in your community with precise location details.</p>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-6" id="complaintForm">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Subject *</label>
+                        {{ form.subject }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Issue Type *</label>
+                        {{ form.issue_type }}
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                        {{ form.email }}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location Address *</label>
+                        {{ form.location }}
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <label class="block text-base font-semibold text-gray-700 mb-2">Pin Location on Map *</label>
+                    <p class="text-sm text-gray-500 mb-4">Click on the map to select the exact location of the issue.</p>
+
+                    <div id="map" class="map-container mb-4"></div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                            <input type="text" id="latitude" name="latitude" readonly
+                                   class="px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                            <input type="text" id="longitude" name="longitude" readonly
+                                   class="px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed">
+                        </div>
+                    </div>
+                    <input type="hidden" id="leaflet_location" name="leaflet_location">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload Photo (Optional)</label>
+                    {{ form.image }}
+                </div>
+
+                <div class="text-center pt-4">
+                    <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                        Submit Complaint
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-blue-600 rounded-lg p-6 text-white">
+            <h3 class="text-lg font-semibold mb-3">How to use the map:</h3>
+            <ul class="list-disc list-inside space-y-1 text-blue-100">
+                <li>Zoom in to your area using the +/- buttons or scroll wheel.</li>
+                <li>Click on the exact location where the issue is located.</li>
+                <li>The coordinates will automatically be saved with your complaint.</li>
+                <li>This helps authorities quickly locate and address the problem.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var map = L.map('map').setView([9.9312, 76.2673], 12); // Default: Kochi, Kerala
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        // Add click event
+        map.on('click', function(e) {
+            var lat = e.latlng.lat.toFixed(6);
+            var lng = e.latlng.lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng, {draggable: true}).addTo(map);
+                marker.on('dragend', function(e) {
+                    var newLatLng = e.target.getLatLng();
+                    updateCoordinates(newLatLng.lat, newLatLng.lng);
+                });
+            }
+            updateCoordinates(lat, lng);
+        });
+
+        function updateCoordinates(lat, lng) {
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            document.getElementById('leaflet_location').value = lat + "," + lng;
+        }
+
+        // Try geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                map.setView([lat, lng], 15);
+            });
+        }
+
+        // ✅ Show success popup after submission - FIXED VERSION
+        const form = document.getElementById("complaintForm");
+        form.addEventListener("submit", function(event) {
+            // Let the form submit normally to the backend
+            // The success message will be shown by Django messages framework
+        });
+    </script>
+</body>
+</html>

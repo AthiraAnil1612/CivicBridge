@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicBridge - Community Complaint Reporting System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-light {
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-outline-light:hover {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+
+        .section-padding {
+            padding: 80px 0;
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .category-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .how-it-works-step {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 40px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 60px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .complaint-image {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-bridge me-2"></i>CivicBridge
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li> -->
+                    <li class="nav-item">
+                        <!-- <a class="nav-link" href="/complaints/submit/">Report Issue</a> -->
+                        <a class="nav-link" href="{% url 'login' %}">Report Issue</a>
+
+
+
+                    </li>
+                </ul>
+                <div class="ms-3">
+                    <a href="{% url 'officer_login' %}" class="btn btn-outline-light btn-sm">Officer Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Bridge the Gap Between Citizens and Civic Authorities</h1>
+                    <p class="lead mb-4">Report civic issues, track resolutions, and help build better communities together. Your voice matters in shaping your neighborhood.</p>
+                    
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ead8ca9e-4e8e-47b1-a7ee-b77c9ee20f54.png" alt="Modern cityscape showing urban infrastructure and community engagement with citizens and officials working together" class="img-fluid rounded-3 shadow" onerror="this.style.display='none'">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section-padding bg-light">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">1,257</div>
+                    <p>Issues Resolved</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">2,891</div>
+                    <p>Active Users</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">48</div>
+                    <p>Hours Avg. Resolution</p>
+                </div>
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="stats-number">94%</div>
+                    <p>Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose CivicBridge?</h2>
+                <p class="lead text-muted">Transparent, efficient, and community-driven civic issue resolution</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h4>Image-Based Reporting</h4>
+                        <p>Upload photos of issues with detailed descriptions and precise location tagging for accurate identification.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h4>Auto-Escalation System</h4>
+                        <p>Automatic escalation to higher authorities if issues aren't resolved within specified timeframes.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h4>Real-time Notifications</h4>
+                        <p>Receive email and SMS updates on your complaint status and resolution progress.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Public Dashboard</h4>
+                        <p>Transparent tracking of all reported issues with status updates and resolution timelines.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4>Location Mapping</h4>
+                        <p>Interactive maps to pinpoint exact locations and view nearby reported issues.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Accountability System</h4>
+                        <p>Department performance tracking and public accountability metrics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">How CivicBridge Works</h2>
+                <p class="lead text-muted">Simple process from reporting to resolution</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="how-it-works-step">
+                        <div class="step-number">1</div>
+                        <h4>Report an Issue</h4>
+                        <p>Take a photo, add details, and pinpoint the location of the civic issue you've encountered.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">2</div>
+                        <h4>Auto-Assignment</h4>
+                        <p>Our system automatically routes your complaint to the relevant department based on category and location.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">3</div>
+                        <h4>Track Progress</h4>
+                        <p>Monitor your complaint status in real-time with notifications at every stage of the process.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="how-it-works-step">
+                        <div class="step-number">4</div>
+                        <h4>Department Action</h4>
+                        <p>Authorities review, prioritize, and work on resolving the reported issues.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">5</div>
+                        <h4>Resolution & Verification</h4>
+                        <p>Once resolved, officers upload proof and the system notifies you for confirmation.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-number">6</div>
+                        <h4>Auto-Escalation</h4>
+                        <p>If unresolved within timeframe, complaint automatically escalates to higher authorities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Common Complaint Categories</h2>
+                <p class="lead text-muted">Report various civic issues affecting your community</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/1b58b1dd-1426-4411-8421-b787e5c70f65.png" alt="Overflowing garbage bin in residential area with scattered waste attracting pests" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Garbage</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Garbage Overflow</h4>
+                            <p>Report overflowing bins, illegal dumping, and waste management issues.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/d0c5017e-6aab-438d-9087-29023f94ea10.png" alt="Broken water pipe gushing water onto street causing flooding and infrastructure damage" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Water</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Broken Pipes</h4>
+                            <p>Report water pipe leaks, sewage issues, and drainage problems.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/8c435758-e881-480a-8d4a-913af7538d5d.png" alt="Severe potholes and road surface damage on urban street causing traffic hazards" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Roads</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Road Damage</h4>
+                            <p>Report potholes, damaged signage, and road safety hazards.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/7772adc1-6482-40fc-a240-ba9177a8f72b.png" alt="Non-functioning streetlight in dark urban area creating safety concerns at night" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Lighting</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Streetlight Failures</h4>
+                            <p>Report malfunctioning streetlights and public lighting issues.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/71325d94-b7db-4dbf-80f7-764d5b9a3bb9.png" alt="Overgrown vegetation obstructing sidewalks and public pathways in neighborhood" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Maintenance</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Public Space Maintenance</h4>
+                            <p>Report park maintenance, sidewalk issues, and public space concerns.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="category-card">
+                        <div class="position-relative">
+                            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c17b630f-1448-4044-999e-62db36074688.png" alt="Traffic signal malfunction at busy intersection causing congestion and safety risks" class="complaint-image" onerror="this.style.display='none'">
+                            <span class="category-badge">Traffic</span>
+                        </div>
+                        <div class="p-4">
+                            <h4>Traffic Management</h4>
+                            <p>Report traffic signal issues, signage problems, and congestion concerns.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">Ready to Make a Difference in Your Community?</h2>
+            <p class="lead mb-4">Join thousands of citizens who are actively improving their neighborhoods through CivicBridge</p>
+            <a href="{% url 'login' %}" class="btn btn-light btn-lg px-5">Report an Issue Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold">CivicBridge</h5>
+                    <p>Bridging the gap between citizens and civic authorities for better community infrastructure and services.</p>
+                    <div class="mt-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h6>Quick Links</h6>
+                    <div class="footer-links">
+                        <a href="#features">Features</a>
+                        <a href="#how-it-works">How It Works</a>
+                        <a href="#categories">Categories</a>
+                        <a href="#about">About Us</a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h6>Resources</h6>
+                    <div class="footer-links">
+                        <a href="#">Help Center</a>
+                        <a href="#">Community Guidelines</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 mb-4">
+                    <h6>Contact Us</h6>
+                    <div class="footer-links">
+                        <a href="mailto:info@civicbridge.org"><i class="fas fa-envelope me-2"></i>info@civicbridge.org</a>
+                        <a href="tel:+15551234567"><i class="fas fa-phone me-2"></i>+1 (555) 123-4567</a>
+                        <a href="#"><i class="fas fa-map-marker-alt me-2"></i>123 Civic Center, City</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-light opacity-25">
+            <div class="text-center">
+                <p class="mb-0">© 2024 CivicBridge. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Simple animation for feature cards on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.feature-card, .category-card');
+            elements.forEach(element => {
+                const position = element.getBoundingClientRect();
+                if (position.top < window.innerHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.feature-card, .category-card');
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Initial check
+        });
+    </script>
+</body>
+</html>

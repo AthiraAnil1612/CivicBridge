@@ -1,0 +1,7 @@
+- [x] Update template/officer_complaint_detail.html to hide escalation option if status is 'Resolved' or 'Escalated'
+- [x] Add check in home/views.py escalate_complaint view to prevent escalation of resolved complaints
+- [x] Test the changes by running the server
+- [x] Remove 'Escalated' option from status update dropdown if complaint is Resolved
+- [x] Hide 'Escalate' button in officer dashboard table for Resolved or Escalated complaints
+- [x] Add edit option for users to edit pending complaints
+- [x] Add reject button for officers in approve officers page

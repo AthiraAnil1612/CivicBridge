@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Login</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A192F; /* Dark blue background */
+        }
+        input {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+        }
+        button {
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-[#0A192F] flex items-center justify-center min-h-screen relative">
+
+    <!-- ✅ Top-right button linking to base page -->
+    <div class="absolute top-6 right-6">
+        <a href="{% url 'base' %}" 
+           class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1 shadow-lg">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6"></path>
+            </svg>
+            Home
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full mx-4">
+        <div class="flex flex-col items-center mb-6">
+            <svg class="w-12 h-12 text-blue-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <h1 class="text-3xl font-bold text-gray-800">CivicBridge</h1>
+        </div>
+
+        <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Officer Login</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-red-500 text-sm text-center mb-4">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <input type="text" name="username" placeholder="Username" required
+                       class="w-full px-4 py-3 rounded-lg text-gray-700 placeholder-gray-500">
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required
+                       class="w-full px-4 py-3 rounded-lg text-gray-700 placeholder-gray-500">
+            </div>
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1">
+                Login
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-gray-600 text-sm">
+            Don’t have an officer account?
+            <a href="{% url 'officer_register' %}" class="text-blue-600 hover:text-blue-800 font-medium">Register</a>
+        </p>
+    </div>
+
+</body>
+</html>
